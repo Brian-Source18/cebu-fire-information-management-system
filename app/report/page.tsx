@@ -44,7 +44,7 @@ export default function ReportEmergency() {
       const token = localStorage.getItem('access_token');
       const headers: Record<string, string> = {};
       if (token) headers['Authorization'] = `Bearer ${token}`;
-      const response = await fetch('http://localhost:8000/api/emergency-reports/', { method: 'POST', headers, body: data });
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/emergency-reports/', { method: 'POST', headers, body: data });
       if (response.ok) {
         setSuccess(true);
       } else {

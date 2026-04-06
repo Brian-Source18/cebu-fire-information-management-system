@@ -33,8 +33,8 @@ export default function MapPage() {
   useEffect(() => {
     const fetchData = () => {
       Promise.all([
-        fetch('http://localhost:8000/api/fire-stations/').then(res => res.json()),
-        fetch('http://localhost:8000/api/responding-emergencies/').then(res => res.json()),
+        fetch('https://firebackend-tsi7.onrender.com/api/fire-stations/').then(res => res.json()),
+        fetch('https://firebackend-tsi7.onrender.com/api/responding-emergencies/').then(res => res.json()),
       ]).then(([stationsData, reportsData]) => {
         setStations(stationsData);
         setEmergencies(reportsData);

@@ -17,7 +17,7 @@ export default function StationNotificationsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/station/notifications/', {
+    fetch('https://firebackend-tsi7.onrender.com/api/station/notifications/', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

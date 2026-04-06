@@ -17,7 +17,7 @@ export default function TrainedHeroes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/heroic-acts/')
+    fetch('https://firebackend-tsi7.onrender.com/api/heroic-acts/')
       .then(res => res.json())
       .then(data => { setHeroicActs(data); setLoading(false); })
       .catch(() => setLoading(false));

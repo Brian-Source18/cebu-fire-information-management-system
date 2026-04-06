@@ -27,11 +27,11 @@ export default function Home() {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/news/')
+    fetch('https://firebackend-tsi7.onrender.com/api/news/')
       .then(res => res.json())
       .then(data => setLatestNews(data.slice(0, 3)))
       .catch(() => {});
-    fetch('http://localhost:8000/api/announcements/')
+    fetch('https://firebackend-tsi7.onrender.com/api/announcements/')
       .then(res => res.json())
       .then(data => setAnnouncements(data.slice(0, 2)))
       .catch(() => {});
@@ -40,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     if (!user) return;
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/emergency-reports/', {
+    fetch('https://firebackend-tsi7.onrender.com/api/emergency-reports/', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

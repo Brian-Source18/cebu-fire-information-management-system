@@ -14,7 +14,7 @@ export default function ForgotPassword() {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/auth/forgot-password/', {
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/auth/forgot-password/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username }),

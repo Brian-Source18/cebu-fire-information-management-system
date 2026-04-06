@@ -15,7 +15,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     const fetchStats = () => {
-      fetch('http://localhost:8000/api/admin/dashboard/stats/', {
+      fetch('https://firebackend-tsi7.onrender.com/api/admin/dashboard/stats/', {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.ok ? res.json() : null)
@@ -23,7 +23,7 @@ export default function AdminDashboard() {
         .catch(() => setLoading(false));
     };
     fetchStats();
-    fetch('http://localhost:8000/api/admin/users/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/users/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setNewUsers(data.count || 0)).catch(() => {});
     const interval = setInterval(fetchStats, 10000);
     return () => clearInterval(interval);

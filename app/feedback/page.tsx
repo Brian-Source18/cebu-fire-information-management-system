@@ -21,7 +21,7 @@ export default function FeedbackPage() {
       const token = localStorage.getItem('access_token');
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch('http://localhost:8000/api/feedback/', {
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/feedback/', {
         method: 'POST',
         headers,
         body: JSON.stringify({ rating, message, name: user ? '' : name }),

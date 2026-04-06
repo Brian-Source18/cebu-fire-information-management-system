@@ -28,7 +28,7 @@ export default function FireStationsManagement() {
   const fetchStations = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/api/admin/fire-stations/', {
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/fire-stations/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -44,8 +44,8 @@ export default function FireStationsManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingId 
-      ? `http://localhost:8000/api/admin/fire-stations/${editingId}/`
-      : 'http://localhost:8000/api/admin/fire-stations/';
+      ? `https://firebackend-tsi7.onrender.com/api/admin/fire-stations/${editingId}/`
+      : 'https://firebackend-tsi7.onrender.com/api/admin/fire-stations/';
     const method = editingId ? 'PUT' : 'POST';
 
     try {
@@ -91,7 +91,7 @@ export default function FireStationsManagement() {
     if (!confirm('Delete this fire station?')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`http://localhost:8000/api/admin/fire-stations/${id}/`, {
+      await fetch(`https://firebackend-tsi7.onrender.com/api/admin/fire-stations/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

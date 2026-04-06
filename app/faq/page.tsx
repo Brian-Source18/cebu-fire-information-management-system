@@ -21,7 +21,7 @@ export default function FAQ() {
 
   const fetchFAQs = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/faq/');
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/faq/');
       const data = await response.json();
       setFaqs(Array.isArray(data) ? data : []);
     } catch (error) {

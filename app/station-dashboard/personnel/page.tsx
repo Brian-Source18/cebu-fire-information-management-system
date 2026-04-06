@@ -21,7 +21,7 @@ export default function StationPersonnelPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/station/personnel/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/station/personnel/', { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(data => { setPersonnel(data); setLoading(false); });
   }, []);

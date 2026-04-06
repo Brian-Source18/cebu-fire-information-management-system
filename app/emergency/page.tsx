@@ -18,7 +18,7 @@ export default function EmergencyResponse() {
   const [imageZoom, setImageZoom] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/news/')
+    fetch('https://firebackend-tsi7.onrender.com/api/news/')
       .then(res => res.json())
       .then(data => {
         console.log('News data:', data);

@@ -38,13 +38,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) return;
-    fetch('http://localhost:8000/api/admin/feedback/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/feedback/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadFeedback(data.count || 0)).catch(() => {});
-    fetch('http://localhost:8000/api/admin/quiz-results/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/quiz-results/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadQuiz(data.count || 0)).catch(() => {});
-    fetch('http://localhost:8000/api/admin/emergency-reports/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadReports(data.count || 0)).catch(() => {});
-    fetch('http://localhost:8000/api/admin/users/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/users/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadUsers(data.count || 0)).catch(() => {});
   }, [pathname]);
 

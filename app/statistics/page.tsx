@@ -21,7 +21,7 @@ export default function Statistics() {
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/statistics/')
+    fetch('https://firebackend-tsi7.onrender.com/api/statistics/')
       .then(res => res.json())
       .then(data => {
         setAllStats(data);

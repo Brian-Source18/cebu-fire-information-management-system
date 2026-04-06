@@ -22,7 +22,7 @@ export default function StationProfile() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/station/profile/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/profile/', { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setProfile(await res.json());
     } catch {}
     finally { setLoading(false); }

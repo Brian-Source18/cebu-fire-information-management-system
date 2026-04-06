@@ -17,7 +17,7 @@ export default function FirePrevention() {
   const [selectedTip, setSelectedTip] = useState<PreventionTip | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/fire-prevention/')
+    fetch('https://firebackend-tsi7.onrender.com/api/fire-prevention/')
       .then(res => res.json())
       .then(data => {
         setTips(data);

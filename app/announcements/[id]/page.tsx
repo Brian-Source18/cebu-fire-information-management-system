@@ -24,7 +24,7 @@ export default function AnnouncementDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/announcements/${id}/`)
+    fetch(`https://firebackend-tsi7.onrender.com/api/announcements/${id}/`)
       .then(res => res.ok ? res.json() : null)
       .then(data => { setAnnouncement(data); setLoading(false); })
       .catch(() => setLoading(false));

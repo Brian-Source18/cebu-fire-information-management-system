@@ -79,7 +79,7 @@ export default function StationReports() {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/station/emergency-reports/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/emergency-reports/', { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setReports(Array.isArray(data) ? data : []);
     } catch { setReports([]); }
@@ -89,7 +89,7 @@ export default function StationReports() {
   const fetchPersonnel = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/station/personnel/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/personnel/', { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setPersonnel(await res.json());
     } catch {}
   };
@@ -98,7 +98,7 @@ export default function StationReports() {
     setLogReport(report); setShowLogModal(true);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`http://localhost:8000/api/station/response-log/${report.id}/`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/response-log/${report.id}/`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         if (data) {
@@ -116,7 +116,7 @@ export default function StationReports() {
     if (!logReport) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`http://localhost:8000/api/station/response-log/${logReport.id}/`, {
+      await fetch(`https://firebackend-tsi7.onrender.com/api/station/response-log/${logReport.id}/`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(logForm),
@@ -137,7 +137,7 @@ export default function StationReports() {
       const token = localStorage.getItem('access_token');
       const body: any = { status: newStatus };
       if (newStatus === 'resolved') body.resolution_notes = notes;
-      const res = await fetch(`http://localhost:8000/api/station/emergency-reports/${id}/`, {
+      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${id}/`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -161,7 +161,7 @@ export default function StationReports() {
   const handleUpdateAlarm = async (id: number, alarm_level: string) => {
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`http://localhost:8000/api/station/emergency-reports/${id}/`, {
+      await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${id}/`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ alarm_level: alarm_level || null }),
@@ -178,7 +178,7 @@ export default function StationReports() {
       async (pos) => {
         try {
           const token = localStorage.getItem('access_token');
-          const res = await fetch(`http://localhost:8000/api/station/emergency-reports/${report.id}/`, {
+          const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${report.id}/`, {
             method: 'PATCH',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ latitude: parseFloat(pos.coords.latitude.toFixed(6)), longitude: parseFloat(pos.coords.longitude.toFixed(6)) }),
@@ -211,7 +211,7 @@ export default function StationReports() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/station/emergency-reports/', {
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/emergency-reports/', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, latitude: formData.latitude ? parseFloat(formData.latitude) : null, longitude: formData.longitude ? parseFloat(formData.longitude) : null }),

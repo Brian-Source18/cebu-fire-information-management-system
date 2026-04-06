@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const API = 'http://localhost:8000';
+const API = 'https://firebackend-tsi7.onrender.com';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);

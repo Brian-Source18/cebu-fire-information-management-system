@@ -18,7 +18,7 @@ export default function NewsDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/news/${id}/`)
+    fetch(`https://firebackend-tsi7.onrender.com/api/news/${id}/`)
       .then(res => res.ok ? res.json() : null)
       .then(data => { setNews(data); setLoading(false); })
       .catch(() => setLoading(false));

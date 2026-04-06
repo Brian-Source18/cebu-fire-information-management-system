@@ -1,2 +1,2 @@
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://firebackend-tsi7.onrender.com';
+const API = process.env.NEXT_PUBLIC_API_URL
 export default API;

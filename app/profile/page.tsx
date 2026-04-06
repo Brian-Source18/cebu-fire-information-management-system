@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = 'https://firebackend-tsi7.onrender.com';
 
 const statusConfig: Record<string, { color: string; bg: string; label: string }> = {
   pending:    { color: '#d97706', bg: '#fffbeb', label: 'Pending' },

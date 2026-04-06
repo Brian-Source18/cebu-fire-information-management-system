@@ -49,14 +49,14 @@ export default function EmergencyReportsManagement() {
     fetchReports();
     const interval = setInterval(fetchReports, 10000);
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/admin/emergency-reports/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
     return () => clearInterval(interval);
   }, []);
 
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/admin/emergency-reports/', {
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/', {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setReports(await res.json());
@@ -65,7 +65,7 @@ export default function EmergencyReportsManagement() {
 
   const handleUpdateStatus = async (id: number, status: string) => {
     const token = localStorage.getItem('access_token');
-    await fetch(`http://localhost:8000/api/admin/emergency-reports/${id}/`, {
+    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
@@ -75,7 +75,7 @@ export default function EmergencyReportsManagement() {
 
   const handleUpdateAlarm = async (id: number, alarm_level: string) => {
     const token = localStorage.getItem('access_token');
-    await fetch(`http://localhost:8000/api/admin/emergency-reports/${id}/`, {
+    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ alarm_level: alarm_level || null }),
@@ -87,7 +87,7 @@ export default function EmergencyReportsManagement() {
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this report?')) return;
     const token = localStorage.getItem('access_token');
-    await fetch(`http://localhost:8000/api/admin/emergency-reports/${id}/`, {
+    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
       method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
     });
     fetchReports();
@@ -97,7 +97,7 @@ export default function EmergencyReportsManagement() {
     setSelectedReport(report); setResponseLog(null);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`http://localhost:8000/api/admin/response-logs/?report=${report.id}`, {
+      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/response-logs/?report=${report.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) { const d = await res.json(); setResponseLog(d.length > 0 ? d[0] : null); }

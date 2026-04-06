@@ -26,7 +26,7 @@ export default function AnnouncementsManagement() {
   const fetchAnnouncements = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/api/admin/announcements/', {
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/announcements/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -42,8 +42,8 @@ export default function AnnouncementsManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingId 
-      ? `http://localhost:8000/api/admin/announcements/${editingId}/`
-      : 'http://localhost:8000/api/admin/announcements/';
+      ? `https://firebackend-tsi7.onrender.com/api/admin/announcements/${editingId}/`
+      : 'https://firebackend-tsi7.onrender.com/api/admin/announcements/';
     const method = editingId ? 'PUT' : 'POST';
 
     try {
@@ -78,7 +78,7 @@ export default function AnnouncementsManagement() {
     if (!confirm('Delete this announcement?')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`http://localhost:8000/api/admin/announcements/${id}/`, {
+      await fetch(`https://firebackend-tsi7.onrender.com/api/admin/announcements/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

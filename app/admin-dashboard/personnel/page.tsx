@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
-const API = 'http://localhost:8000';
+const API = 'https://firebackend-tsi7.onrender.com';
 
 const RANKS = [
   { value: 'fire_marshal', label: 'Fire Marshal' },

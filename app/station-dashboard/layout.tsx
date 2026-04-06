@@ -29,7 +29,7 @@ export default function StationDashboardLayout({ children }: { children: React.R
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:8000/api/station/notifications/', {
+      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/notifications/', {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {

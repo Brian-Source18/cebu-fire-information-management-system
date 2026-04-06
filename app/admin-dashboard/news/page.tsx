@@ -38,7 +38,7 @@ export default function NewsManagement() {
   const fetchNews = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/api/admin/news/', {
+      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/news/', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
@@ -68,8 +68,8 @@ export default function NewsManagement() {
       }
 
       const url = editingNews
-        ? `http://localhost:8000/api/admin/news/${editingNews.id}/`
-        : 'http://localhost:8000/api/admin/news/';
+        ? `https://firebackend-tsi7.onrender.com/api/admin/news/${editingNews.id}/`
+        : 'https://firebackend-tsi7.onrender.com/api/admin/news/';
       
       const method = editingNews ? 'PATCH' : 'POST';
 
@@ -100,7 +100,7 @@ export default function NewsManagement() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:8000/api/admin/news/${id}/`, {
+      const response = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/news/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
       });

@@ -25,12 +25,12 @@ export default function AdminFeedback() {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/admin/feedback/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/feedback/', { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => { setFeedbacks(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
     // Mark all as read
-    fetch('http://localhost:8000/api/admin/feedback/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    fetch('https://firebackend-tsi7.onrender.com/api/admin/feedback/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
   }, []);
 
   const filtered = filterRating ? feedbacks.filter(f => f.rating === Number(filterRating)) : feedbacks;
