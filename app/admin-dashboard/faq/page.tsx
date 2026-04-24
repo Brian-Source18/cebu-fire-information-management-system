@@ -34,7 +34,7 @@ export default function FAQManagement() {
   const fetchFAQs = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/faq/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/faq/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -50,8 +50,8 @@ export default function FAQManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingId 
-      ? `https://firebackend-tsi7.onrender.com/api/admin/faq/${editingId}/`
-      : 'https://firebackend-tsi7.onrender.com/api/admin/faq/';
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/admin/faq/${editingId}/`
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/admin/faq/`;
     const method = editingId ? 'PUT' : 'POST';
 
     try {
@@ -86,7 +86,7 @@ export default function FAQManagement() {
     if (!confirm('Delete this FAQ?')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`https://firebackend-tsi7.onrender.com/api/admin/faq/${id}/`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/faq/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -175,3 +175,4 @@ export default function FAQManagement() {
     </div>
   );
 }
+

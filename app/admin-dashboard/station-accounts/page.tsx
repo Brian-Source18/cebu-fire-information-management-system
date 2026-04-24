@@ -24,13 +24,13 @@ export default function StationAccountsManagement() {
 
   const fetchAccounts = async () => {
     const token = localStorage.getItem('access_token');
-    const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/station-accounts/', { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/station-accounts/`, { headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) setAccounts(await res.json());
     setLoading(false);
   };
   const fetchStations = async () => {
     const token = localStorage.getItem('access_token');
-    const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/fire-stations/', { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/fire-stations/`, { headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) setStations(await res.json());
   };
 
@@ -39,7 +39,7 @@ export default function StationAccountsManagement() {
     if (formData.password !== formData.password_confirm) { alert('Passwords do not match!'); return; }
     setSubmitting(true);
     const token = localStorage.getItem('access_token');
-    const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/station-accounts/', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/station-accounts/`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
@@ -52,7 +52,7 @@ export default function StationAccountsManagement() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); setSubmitting(true);
     const token = localStorage.getItem('access_token');
-    const res = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/station-accounts/${editingAccount.id}/`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/station-accounts/${editingAccount.id}/`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(editFormData),
@@ -65,7 +65,7 @@ export default function StationAccountsManagement() {
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this station account?')) return;
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/station-accounts/${id}/`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/station-accounts/${id}/`, { method: `DELETE`, headers: { Authorization: `Bearer ${token}` } });
     fetchAccounts();
   };
 
@@ -292,3 +292,4 @@ export default function StationAccountsManagement() {
     </div>
   );
 }
+

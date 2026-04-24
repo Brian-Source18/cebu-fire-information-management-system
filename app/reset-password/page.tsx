@@ -32,7 +32,7 @@ function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/auth/reset-password/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/reset-password/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, code, new_password: newPassword }),
@@ -161,3 +161,4 @@ export default function ResetPassword() {
     </Suspense>
   );
 }
+

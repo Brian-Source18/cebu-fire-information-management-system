@@ -13,7 +13,7 @@ export default function Certificate() {
     if (!authLoading && !user) { router.push('/login'); return; }
     if (!authLoading && user) {
       const token = localStorage.getItem('access_token');
-      fetch('https://firebackend-tsi7.onrender.com/api/quiz-results/', { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/quiz-results/`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => { setResult(data.find((r: any) => r.passed) || null); setLoading(false); })
         .catch(() => setLoading(false));
@@ -67,7 +67,7 @@ export default function Certificate() {
             <div style={{ color: '#64748b', fontSize: 15, marginBottom: 8 }}>This certifies that</div>
             <div style={{ color: '#dc2626', fontWeight: 900, fontSize: 32, marginBottom: 8 }}>{user.username}</div>
             <div style={{ color: '#64748b', fontSize: 15, marginBottom: 8 }}>has successfully completed the</div>
-            <div style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Cebu City Fire Department</div>
+            <div style={{ color: '#1e293b', fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Cebu City Fire System</div>
             <div style={{ color: '#ea580c', fontWeight: 700, fontSize: 16, marginBottom: 24 }}>Fire Safety Quiz</div>
 
             <div style={{ display: 'inline-block', backgroundColor: '#fef2f2', border: '2px solid #fca5a5', borderRadius: 14, padding: '12px 28px', marginBottom: 28 }}>
@@ -86,7 +86,7 @@ export default function Certificate() {
           {/* Footer */}
           <div style={{ background: '#f8fafc', padding: '16px 24px', textAlign: 'center', borderTop: '1px solid #e2e8f0' }}>
             <div style={{ fontSize: 20, marginBottom: 4 }}>🔥</div>
-            <div style={{ color: '#64748b', fontSize: 12, fontWeight: 600 }}>CEBU CITY FIRE DEPARTMENT</div>
+            <div style={{ color: '#64748b', fontSize: 12, fontWeight: 600 }}>CEBU CITY FIRE System</div>
             <div style={{ color: '#94a3b8', fontSize: 11 }}>Always Ready • Always There</div>
           </div>
         </div>
@@ -94,3 +94,4 @@ export default function Certificate() {
     </div>
   );
 }
+

@@ -1,20 +1,28 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
 
-const priorityOptions = [
-  { value: 'low',      label: 'Low',      color: '#16a34a', bg: '#f0fdf4', icon: '🟢' },
-  { value: 'medium',   label: 'Medium',   color: '#d97706', bg: '#fffbeb', icon: '🟡' },
-  { value: 'high',     label: 'High',     color: '#ea580c', bg: '#fff7ed', icon: '🟠' },
-  { value: 'critical', label: 'Critical', color: '#dc2626', bg: '#fef2f2', icon: '🔴' },
+const CEBU_BARANGAYS = [
+  'Adlaon','Agsungot','Apas','Babag','Bacayan','Banilad','Basak Pardo','Basak San Nicolas',
+  'Binaliw','Bonbon','Budlaan','Bulacao','Buot-Taup Pardo','Busay','Calamba','Cambinocot',
+  'Capitol Site','Carreta','Central','Cogon Pardo','Cogon Ramos','Day-as','Duljo','Ermita',
+  'Escario','Guadalupe','Guba','Hippodromo','Inayawan','Kalubihan','Kalunasan','Kamagayan',
+  'Kamputhaw','Kasambagan','Kinasang-an','Labangon','Lahug','Lorega','Lusaran','Luz',
+  'Mabini','Mabolo','Malubog','Mambaling','Mining','Mohon','Montalban','Motarro',
+  'Nasipit','Nga-an','Nangka','Pahina Central','Pahina San Nicolas','Pamutan','Pardo',
+  'Pari-an','Paril','Pasil','Pit-os','Poblacion Pardo','Pulangbato','Pung-ol-Sibugay',
+  'Punta Princesa','Quiot Pardo','Sambag I','Sambag II','San Antonio','San Jose',
+  'San Nicolas Central','San Roque','Santa Cruz','Santo Niño','Sapangdaku','Sawang Calero',
+  'Sinsin','Sirao','Suba','Sudlon I','Sudlon II','T. Padilla','Tabunan','Tagbao',
+  'Talamban','Taptap','Tejero','Tinago','Tisa','To-ong Pardo','Toong','Zapatera',
 ];
 
 export default function ReportEmergency() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const [formData, setFormData] = useState({ title: '', description: '', location: '', contact_number: '', priority: 'medium', latitude: '', longitude: '' });
+  const [formData, setFormData] = useState({ title: '', description: '', location: '', contact_number: '', barangay: '', latitude: '', longitude: '' });
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -34,9 +42,8 @@ export default function ReportEmergency() {
     const data = new FormData();
     data.append('title', formData.title);
     data.append('description', formData.description);
-    data.append('location', formData.location);
+    data.append('location', `${formData.location}, Brgy. ${formData.barangay}, Cebu City`);
     data.append('contact_number', formData.contact_number);
-    data.append('priority', formData.priority);
     if (formData.latitude) data.append('latitude', formData.latitude);
     if (formData.longitude) data.append('longitude', formData.longitude);
     if (image) data.append('image', image);
@@ -44,7 +51,7 @@ export default function ReportEmergency() {
       const token = localStorage.getItem('access_token');
       const headers: Record<string, string> = {};
       if (token) headers['Authorization'] = `Bearer ${token}`;
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/emergency-reports/', { method: 'POST', headers, body: data });
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/emergency-reports/`, { method: 'POST', headers, body: data });
       if (response.ok) {
         setSuccess(true);
       } else {
@@ -60,7 +67,11 @@ export default function ReportEmergency() {
     }
   };
 
-  if (authLoading) return (
+  useEffect(() => {
+    if (!authLoading && !user) router.push('/login');
+  }, [authLoading, user]);
+
+  if (authLoading || !user) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ fontSize: 40 }}>🚨</div>
     </div>
@@ -72,7 +83,7 @@ export default function ReportEmergency() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9', fontFamily: 'Arial, Helvetica, sans-serif' }}>
       <style>{`
-        @media (max-width: 640px) { .priority-grid { grid-template-columns: repeat(2,1fr) !important; } .loc-btns { flex-direction: column !important; } }
+        @media (max-width: 640px) { .loc-btns { flex-direction: column !important; } }
       `}</style>
 
       {/* Success Modal */}
@@ -82,7 +93,7 @@ export default function ReportEmergency() {
             <div style={{ width: 72, height: 72, backgroundColor: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 36 }}>✅</div>
             <div style={{ fontWeight: 800, fontSize: 20, color: '#1e293b', marginBottom: 8 }}>Report Submitted!</div>
             <div style={{ color: '#64748b', fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
-              Your emergency report has been successfully sent to the <strong>Cebu City Fire Department</strong>. Responders will be notified immediately.
+              Your emergency report has been successfully sent to the <strong>Cebu City Fire System</strong>. Responders will be notified immediately.
             </div>
             <button onClick={() => router.push(user ? '/my-reports' : '/')}
               style={{ width: '100%', padding: '12px', borderRadius: 12, border: 'none', backgroundColor: '#dc2626', color: '#fff', fontWeight: 800, fontSize: 15, cursor: 'pointer' }}>
@@ -110,7 +121,7 @@ export default function ReportEmergency() {
         <div style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)', borderRadius: 20, padding: '28px 24px', marginBottom: 20, textAlign: 'center' }}>
           <div style={{ width: 56, height: 56, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: 26 }}>🚨</div>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Report Emergency</div>
-          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>Submit an emergency report to the Cebu City Fire Department</div>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>Submit an emergency report to the Cebu City Fire System</div>
         </div>
 
         {error && (
@@ -133,6 +144,14 @@ export default function ReportEmergency() {
             </div>
 
             <div>
+              <label style={labelStyle}>Barangay *</label>
+              <select value={formData.barangay} onChange={e => setFormData({ ...formData, barangay: e.target.value })} style={inputStyle} required>
+                <option value="">Select Barangay</option>
+                {CEBU_BARANGAYS.map(b => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </div>
+
+            <div>
               <label style={labelStyle}>Location *</label>
               <input type="text" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} placeholder="Enter the exact address or location of the fire" style={inputStyle} required />
             </div>
@@ -143,20 +162,7 @@ export default function ReportEmergency() {
             </div>
 
             <div>
-              <label style={labelStyle}>Priority Level</label>
-              <div className="priority-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
-                {priorityOptions.map(p => (
-                  <button key={p.value} type="button" onClick={() => setFormData({ ...formData, priority: p.value })}
-                    style={{ padding: '10px 6px', borderRadius: 10, border: `1.5px solid ${formData.priority === p.value ? p.color : '#e2e8f0'}`, backgroundColor: formData.priority === p.value ? p.bg : '#fff', color: formData.priority === p.value ? p.color : '#64748b', fontWeight: 700, fontSize: 12, cursor: 'pointer', textAlign: 'center' }}>
-                    <div style={{ fontSize: 16, marginBottom: 3 }}>{p.icon}</div>
-                    {p.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label style={labelStyle}>Photo <span style={{ color: '#94a3b8', fontWeight: 400, textTransform: 'none' }}>(optional)</span></label>
+              <label style={labelStyle}>Photo *</label>
               <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', borderRadius: 12, border: '2px dashed #e2e8f0', backgroundColor: '#f8fafc', cursor: 'pointer' }}>
                 {imagePreview ? (
                   <img src={imagePreview} alt="Preview" style={{ maxHeight: 160, borderRadius: 10, objectFit: 'cover' }} />
@@ -167,7 +173,7 @@ export default function ReportEmergency() {
                     <span style={{ color: '#94a3b8', fontSize: 11, marginTop: 4 }}>JPG, PNG up to 10MB</span>
                   </>
                 )}
-                <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
+                <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} required />
               </label>
               {imagePreview && (
                 <button type="button" onClick={() => { setImage(null); setImagePreview(null); }} style={{ marginTop: 8, fontSize: 12, color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer' }}>✕ Remove photo</button>
@@ -188,3 +194,4 @@ export default function ReportEmergency() {
     </div>
   );
 }
+

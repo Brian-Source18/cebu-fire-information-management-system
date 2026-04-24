@@ -18,17 +18,22 @@ export default function EmergencyResponse() {
   const [imageZoom, setImageZoom] = useState(false);
 
   useEffect(() => {
-    fetch('https://firebackend-tsi7.onrender.com/api/news/')
-      .then(res => res.json())
-      .then(data => {
-        console.log('News data:', data);
-        setNews(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching news:', err);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news/`).then(r => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/announcements/`).then(r => r.json()),
+    ]).then(([newsData, annData]) => {
+      const emergencyAnns = (Array.isArray(annData) ? annData : []).filter((a: any) => a.priority === 'emergency').map((a: any) => ({
+        id: `ann-${a.id}`,
+        title: a.title,
+        content: a.message,
+        image: a.image,
+        created_by_name: a.created_by_name,
+        created_at: a.created_at,
+        isAnnouncement: true,
+      }));
+      setNews([...emergencyAnns, ...(Array.isArray(newsData) ? newsData.map((n: any) => ({ ...n, id: `news-${n.id}` })) : [])]);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   const openModal = (item: NewsItem) => {
@@ -52,7 +57,7 @@ export default function EmergencyResponse() {
             <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition">
               <div className="fire-badge" style={{fontSize: '1.5rem'}}>🔥</div>
               <div>
-                <h1 className="text-lg sm:text-2xl font-black text-white tracking-wider">CEBU FIRE DEPARTMENT</h1>
+                <h1 className="text-lg sm:text-2xl font-black text-white tracking-wider">CEBU CITY FIRE SYSTEM</h1>
                 <p className="text-yellow-300 text-xs sm:text-sm font-semibold">Emergency Response Updates</p>
               </div>
             </Link>
@@ -89,7 +94,9 @@ export default function EmergencyResponse() {
                     )}
                     <div className="p-6">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">NEWS</span>
+                        <span className={`px-3 py-1 rounded-full text-sm font-bold text-white ${(item as any).isAnnouncement ? 'bg-red-700' : 'bg-red-600'}`}>
+                          {(item as any).isAnnouncement ? 'EMERGENCY' : 'NEWS'}
+                        </span>
                         <span className="text-gray-400 text-sm">
                           {new Date(item.created_at).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -194,3 +201,4 @@ export default function EmergencyResponse() {
     </div>
   );
 }
+

@@ -7,21 +7,22 @@ import { usePathname } from 'next/navigation';
 
 const menuItems = [
   { name: 'Dashboard',         path: '/admin-dashboard',                  icon: '📊' },
-  { name: 'News',              path: '/admin-dashboard/news',             icon: '📰' },
-  { name: 'Fire Prevention',   path: '/admin-dashboard/prevention',       icon: '🛡️' },
-  { name: 'Announcements',     path: '/admin-dashboard/announcements',    icon: '📢' },
-  { name: 'Fire Stations',     path: '/admin-dashboard/stations',         icon: '🚒' },
-  { name: 'Heroic Acts',       path: '/admin-dashboard/heroic-acts',      icon: '🏆' },
-  { name: 'FAQ',               path: '/admin-dashboard/faq',              icon: '❓' },
-  { name: 'Statistics',        path: '/admin-dashboard/statistics',       icon: '📈' },
   { name: 'Emergency Reports', path: '/admin-dashboard/reports',          icon: '🚨' },
   { name: 'Response Logs',     path: '/admin-dashboard/response-logs',    icon: '📋' },
-  { name: 'Audit Logs',        path: '/admin-dashboard/audit-logs',       icon: '🔍' },
-  { name: 'Quiz Results',      path: '/admin-dashboard/quiz-results',     icon: '📝' },
-  { name: 'Feedback',          path: '/admin-dashboard/feedback',         icon: '💬' },
+  { name: 'Fire Stations',     path: '/admin-dashboard/stations',         icon: '🚒' },
   { name: 'Station Accounts',  path: '/admin-dashboard/station-accounts', icon: '👥' },
+  { name: 'Personnel',         path: '/admin-dashboard/personnel',        icon: '🧑‍🚒' },
+  { name: 'News',              path: '/admin-dashboard/news',             icon: '📰' },
+  { name: 'Announcements',     path: '/admin-dashboard/announcements',    icon: '📢' },
+  { name: 'Fire Prevention',   path: '/admin-dashboard/prevention',       icon: '🛡️' },
+  { name: 'Heroic Acts',       path: '/admin-dashboard/heroic-acts',      icon: '🏆' },
+  { name: 'Featured Stories',  path: '/admin-dashboard/stories',          icon: '🔥' },
+  { name: 'Statistics',        path: '/admin-dashboard/statistics',       icon: '📈' },
   { name: 'User Management',   path: '/admin-dashboard/users',            icon: '🧑‍💻' },
-  { name: 'Personnel',         path: '/admin-dashboard/personnel',        icon: '🧑🚒' },
+  { name: 'Quiz Results',      path: '/admin-dashboard/quiz-results',     icon: '📝' },
+  { name: 'FAQ',               path: '/admin-dashboard/faq',              icon: '❓' },
+  { name: 'Feedback',          path: '/admin-dashboard/feedback',         icon: '💬' },
+  { name: 'Audit Logs',        path: '/admin-dashboard/audit-logs',       icon: '🔍' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -38,13 +39,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) return;
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/feedback/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/feedback/unread_count/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadFeedback(data.count || 0)).catch(() => {});
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/quiz-results/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/quiz-results/unread_count/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadQuiz(data.count || 0)).catch(() => {});
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/unread_count/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadReports(data.count || 0)).catch(() => {});
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/users/unread_count/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/unread_count/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json()).then(data => setUnreadUsers(data.count || 0)).catch(() => {});
   }, [pathname]);
 
@@ -52,7 +53,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!loading && (!user || user.role !== 'admin')) router.push('/login');
   }, [user, loading, router]);
 
-  // Close mobile drawer on route change
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   if (loading || !user || user.role !== 'admin') return (
@@ -176,7 +176,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="flex items-center justify-between px-4 sm:px-6 py-3 shrink-0"
           style={{ background: 'rgba(15,5,5,0.95)', borderBottom: '1px solid rgba(239,68,68,0.15)' }}>
           <div className="flex items-center gap-3">
-            {/* Hamburger — mobile only */}
             <button onClick={() => setMobileOpen(true)}
               className="lg:hidden w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-white"
               style={{ background: 'rgba(239,68,68,0.1)' }}>
@@ -184,7 +183,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
             <div>
               <h1 className="text-white font-black text-base sm:text-lg">{currentPage}</h1>
-              <p className="text-gray-500 text-xs hidden sm:block">Cebu City Fire Department</p>
+              <p className="text-gray-500 text-xs hidden sm:block">Cebu City Fire System</p>
             </div>
           </div>
           <div className="flex items-center gap-3">

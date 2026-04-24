@@ -21,13 +21,13 @@ export default function QuizResultsManagement() {
   useEffect(() => {
     fetchResults();
     const token = localStorage.getItem('access_token');
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/quiz-results/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/quiz-results/mark_all_read/`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
   }, []);
 
   const fetchResults = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/quiz-results/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/quiz-results/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -45,7 +45,7 @@ export default function QuizResultsManagement() {
     if (!confirm('Delete this quiz result?')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`https://firebackend-tsi7.onrender.com/api/admin/quiz-results/${id}/`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/quiz-results/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -104,3 +104,4 @@ export default function QuizResultsManagement() {
     </div>
   );
 }
+

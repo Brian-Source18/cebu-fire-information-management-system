@@ -10,6 +10,8 @@ interface EmergencyReport {
 }
 interface Personnel { id: number; first_name: string; middle_initial: string; last_name: string; rank_display: string; }
 interface ResponseLog { time_dispatched: string; time_arrived: string; personnel_deployed: Personnel[]; equipment_used: string; notes: string; }
+interface StationEquipment { id: number; name: string; name_display: string; category_display: string; operational: number; }
+interface FireTruck { id: number; truck_number: string; model: string; status: string; }
 
 const alarmCfg: Record<string, { color: string; bg: string; label: string }> = {
   '1st':               { color: '#4ade80', bg: 'rgba(74,222,128,0.15)',   label: '1st Alarm' },
@@ -64,14 +66,20 @@ export default function StationReports() {
   const [showLogModal, setShowLogModal] = useState(false);
   const [logReport, setLogReport] = useState<EmergencyReport | null>(null);
   const [personnel, setPersonnel] = useState<Personnel[]>([]);
+  const [stationEquipment, setStationEquipment] = useState<StationEquipment[]>([]);
+  const [fireTrucks, setFireTrucks] = useState<FireTruck[]>([]);
+  const [selectedTrucks, setSelectedTrucks] = useState<string[]>([]);
   const [existingLog, setExistingLog] = useState<ResponseLog | null>(null);
   const [logForm, setLogForm] = useState({ time_dispatched: '', time_arrived: '', equipment_used: '', notes: '', personnel_deployed_ids: [] as number[] });
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
   const [formData, setFormData] = useState({ title: '', description: '', location: '', latitude: '', longitude: '', priority: 'medium', contact_number: '' });
   const [sendingLocation, setSendingLocation] = useState(false);
 
   useEffect(() => {
     fetchReports();
     fetchPersonnel();
+    fetchStationEquipment();
+    fetchFireTrucks();
     const interval = setInterval(fetchReports, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -79,7 +87,7 @@ export default function StationReports() {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/emergency-reports/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/emergency-reports/`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await res.json();
       setReports(Array.isArray(data) ? data : []);
     } catch { setReports([]); }
@@ -89,37 +97,81 @@ export default function StationReports() {
   const fetchPersonnel = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/personnel/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/personnel/`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setPersonnel(await res.json());
     } catch {}
   };
 
-  const openLogModal = async (report: EmergencyReport) => {
-    setLogReport(report); setShowLogModal(true);
+  const fetchStationEquipment = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/response-log/${report.id}/`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/equipment/`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const data = await res.json();
+        setStationEquipment(Array.isArray(data) ? data.filter((e: StationEquipment) => e.operational > 0) : []);
+      }
+    } catch {}
+  };
+
+  const fetchFireTrucks = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/fire-trucks/`, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const data = await res.json();
+        setFireTrucks(Array.isArray(data) ? data.filter((t: FireTruck) => t.status === 'operational') : []);
+      }
+    } catch {}
+  };
+
+  const now = () => new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+  const openLogModal = async (report: EmergencyReport) => {
+    const currentNow = now();
+    setLogReport(report);
+    setShowLogModal(true);
+    setExistingLog(null);
+    setSelectedEquipment([]);
+    setSelectedTrucks([]);
+    setLogForm({ time_dispatched: currentNow, time_arrived: currentNow, equipment_used: '', notes: '', personnel_deployed_ids: [] });
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/response-log/${report.id}/`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         if (data) {
           setExistingLog(data);
-          setLogForm({ time_dispatched: data.time_dispatched?.slice(0, 16) || '', time_arrived: data.time_arrived?.slice(0, 16) || '', equipment_used: data.equipment_used || '', notes: data.notes || '', personnel_deployed_ids: data.personnel_deployed.map((p: Personnel) => p.id) });
-        } else {
-          setExistingLog(null);
-          setLogForm({ time_dispatched: '', time_arrived: '', equipment_used: '', notes: '', personnel_deployed_ids: [] });
+          const allItems = data.equipment_used ? data.equipment_used.split(',').map((e: string) => e.trim()).filter(Boolean) : [];
+          const savedTrucks = allItems.filter((e: string) => e.startsWith('🚒'));
+          const savedEquipment = allItems.filter((e: string) => !e.startsWith('🚒'));
+          setSelectedEquipment(savedEquipment);
+          setSelectedTrucks(savedTrucks);
+          setLogForm({ time_dispatched: data.time_dispatched?.slice(0, 10) || currentNow, time_arrived: data.time_arrived?.slice(0, 10) || currentNow, equipment_used: data.equipment_used || '', notes: data.notes || '', personnel_deployed_ids: data.personnel_deployed.map((p: Personnel) => p.id) });
         }
       }
     } catch {}
+  };
+
+  const toggleTruck = (label: string) => {
+    setSelectedTrucks(prev =>
+      prev.includes(label) ? prev.filter(t => t !== label) : [...prev, label]
+    );
+  };
+
+  const toggleEquipment = (name: string) => {
+    setSelectedEquipment(prev =>
+      prev.includes(name) ? prev.filter(e => e !== name) : [...prev, name]
+    );
   };
 
   const handleSaveLog = async () => {
     if (!logReport) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`https://firebackend-tsi7.onrender.com/api/station/response-log/${logReport.id}/`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/response-log/${logReport.id}/`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(logForm),
+        body: JSON.stringify({ ...logForm, equipment_used: [...selectedTrucks.map(t => `🚒 ${t}`), ...selectedEquipment].join(', ') }),
       });
       setShowLogModal(false);
     } catch {}
@@ -137,7 +189,7 @@ export default function StationReports() {
       const token = localStorage.getItem('access_token');
       const body: any = { status: newStatus };
       if (newStatus === 'resolved') body.resolution_notes = notes;
-      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${id}/`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/emergency-reports/${id}/`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -161,7 +213,7 @@ export default function StationReports() {
   const handleUpdateAlarm = async (id: number, alarm_level: string) => {
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${id}/`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/emergency-reports/${id}/`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ alarm_level: alarm_level || null }),
@@ -178,7 +230,7 @@ export default function StationReports() {
       async (pos) => {
         try {
           const token = localStorage.getItem('access_token');
-          const res = await fetch(`https://firebackend-tsi7.onrender.com/api/station/emergency-reports/${report.id}/`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/emergency-reports/${report.id}/`, {
             method: 'PATCH',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ latitude: parseFloat(pos.coords.latitude.toFixed(6)), longitude: parseFloat(pos.coords.longitude.toFixed(6)) }),
@@ -211,7 +263,7 @@ export default function StationReports() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/emergency-reports/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/emergency-reports/`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...formData, latitude: formData.latitude ? parseFloat(formData.latitude) : null, longitude: formData.longitude ? parseFloat(formData.longitude) : null }),
@@ -455,9 +507,38 @@ export default function StationReports() {
               ))}
             </div>
             <div className="mb-4">
+              <label className={labelCls} style={{ color: '#f97316' }}>Fire Trucks Used</label>
+              {fireTrucks.length === 0 ? (
+                <p className="text-sm" style={{ color: '#6b7280' }}>No operational fire trucks found.</p>
+              ) : (
+                <div className="rounded-lg p-3 max-h-32 overflow-y-auto grid grid-cols-2 gap-2" style={{ background: 'rgba(15,5,5,0.8)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  {fireTrucks.map(truck => (
+                    <label key={truck.id} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#d1d5db' }}>
+                      <input type="checkbox" checked={selectedTrucks.includes(truck.truck_number)} onChange={() => toggleTruck(truck.truck_number)} className="accent-orange-500" />
+                      <span>🚒 {truck.truck_number}{truck.model ? ` (${truck.model})` : ''}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="mb-4">
               <label className={labelCls} style={{ color: '#f97316' }}>Equipment Used</label>
-              <input type="text" value={logForm.equipment_used} onChange={e => setLogForm(f => ({ ...f, equipment_used: e.target.value }))}
-                placeholder="e.g. Fire truck, Hose, Ladder" className={inputCls} style={inputStyle} />
+              {stationEquipment.length === 0 ? (
+                <p className="text-sm" style={{ color: '#6b7280' }}>No operational equipment found in your station inventory.</p>
+              ) : (
+                <div className="rounded-lg p-3 max-h-40 overflow-y-auto grid grid-cols-2 gap-2" style={{ background: 'rgba(15,5,5,0.8)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  {stationEquipment.map(eq => (
+                    <label key={eq.id} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#d1d5db' }}>
+                      <input type="checkbox" checked={selectedEquipment.includes(eq.name_display)} onChange={() => toggleEquipment(eq.name_display)} className="accent-orange-500" />
+                      <span>{eq.name_display}</span>
+                      <span className="text-xs" style={{ color: '#4ade80' }}>({eq.operational})</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              {selectedEquipment.length > 0 && (
+                <p className="text-xs mt-2" style={{ color: '#f97316' }}>Selected: {selectedEquipment.join(', ')}</p>
+              )}
             </div>
             <div className="mb-4">
               <label className={labelCls} style={{ color: '#f97316' }}>Personnel Deployed</label>
@@ -572,3 +653,4 @@ export default function StationReports() {
     </div>
   );
 }
+

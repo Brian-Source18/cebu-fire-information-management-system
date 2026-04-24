@@ -38,7 +38,7 @@ export default function PreventionManagement() {
   const fetchTips = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/fire-prevention/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/fire-prevention/`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
@@ -68,8 +68,8 @@ export default function PreventionManagement() {
       }
 
       const url = editingTip
-        ? `https://firebackend-tsi7.onrender.com/api/admin/fire-prevention/${editingTip.id}/`
-        : 'https://firebackend-tsi7.onrender.com/api/admin/fire-prevention/';
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/admin/fire-prevention/${editingTip.id}/`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/admin/fire-prevention/`;
       
       const method = editingTip ? 'PATCH' : 'POST';
 
@@ -100,7 +100,7 @@ export default function PreventionManagement() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/fire-prevention/${id}/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/fire-prevention/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -299,3 +299,4 @@ export default function PreventionManagement() {
     </div>
   );
 }
+

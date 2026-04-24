@@ -22,30 +22,6 @@ interface EmergencyReport {
   longitude?: number;
 }
 
-const stationIcon = new L.DivIcon({
-  html: '<div style="font-size:28px;line-height:1;">🚒</div>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-  className: ''
-});
-
-const emergencyIcon = new L.DivIcon({
-  html: '<div style="font-size:28px;line-height:1;">🔥</div>',
-  iconSize: [30, 30],
-  iconAnchor: [15, 30],
-  popupAnchor: [0, -30],
-  className: ''
-});
-
-const userIcon = new L.DivIcon({
-  html: '<div style="font-size:28px;line-height:1;">📍</div>',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32],
-  className: ''
-});
-
 function MapUpdater({ center }: { center: [number, number] }) {
   const map = useMap();
   useEffect(() => {
@@ -136,6 +112,19 @@ export default function StationMap({ stations, emergencies = [] }: { stations: F
   const mapCenter = userLocation || cebuCenter;
 
   if (!mounted) return null;
+
+  const stationIcon = new L.DivIcon({
+    html: '<div style="font-size:28px;line-height:1;">🏛️</div>',
+    iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32], className: ''
+  });
+  const emergencyIcon = new L.DivIcon({
+    html: '<div style="font-size:28px;line-height:1;">🔥</div>',
+    iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30], className: ''
+  });
+  const userIcon = new L.DivIcon({
+    html: '<div style="font-size:28px;line-height:1;">📍</div>',
+    iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32], className: ''
+  });
 
   return (
     <div className="map-container">

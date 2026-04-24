@@ -13,7 +13,7 @@ export default function AuditLogsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/audit-logs/', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/audit-logs/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.json())
       .then(data => { setLogs(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
@@ -100,3 +100,4 @@ export default function AuditLogsPage() {
     </div>
   );
 }
+

@@ -17,7 +17,7 @@ export default function StationNotificationsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    fetch('https://firebackend-tsi7.onrender.com/api/station/notifications/', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/notifications/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
@@ -81,3 +81,4 @@ export default function StationNotificationsPage() {
     </div>
   );
 }
+

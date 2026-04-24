@@ -17,12 +17,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
 
           {/* ── Branding ── */}
-          <div className="lg:col-span-1">
+          <div className="sm:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">🔥</span>
               <div>
                 <p className="text-white font-black text-sm tracking-widest uppercase">Cebu City</p>
-                <p className="font-bold text-xs tracking-widest uppercase" style={{ color: '#f97316' }}>Fire Department</p>
+                <p className="font-bold text-xs tracking-widest uppercase" style={{ color: '#f97316' }}>Fire System</p>
               </div>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-4">
@@ -33,7 +33,7 @@ export default function Footer() {
               <span className="text-red-400 text-lg animate-pulse">🚨</span>
               <div>
                 <p className="text-xs text-gray-500">Emergency Hotline</p>
-                <p className="text-white font-black text-sm">160 / 911</p>
+                <p className="text-white font-black text-sm">160</p>
               </div>
             </div>
           </div>
@@ -46,14 +46,14 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               {[
-                { href: '/',            label: 'Home' },
                 { href: '/emergency',   label: 'Emergency News' },
                 { href: '/prevention',  label: 'Fire Prevention' },
-                { href: '/heroes',      label: 'Heroic Acts' },
                 { href: '/map',         label: 'Station Map' },
                 { href: '/statistics',  label: 'Statistics' },
-                { href: '/faq',         label: 'FAQ' },
+                { href: '/faq',         label: "FAQ's" },
+                { href: '/heroes',      label: 'Heroic Acts' },
                 { href: '/quiz',        label: 'Fire Safety Quiz' },
+                { href: '/feedback',    label: 'Send Feedback' },
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href}
@@ -66,26 +66,25 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* ── My Account ── */}
+          {/* ── Hotlines ── */}
           <div>
             <h4 className="text-white font-black text-xs uppercase tracking-widest mb-4"
               style={{ borderBottom: '1px solid rgba(239,68,68,0.2)', paddingBottom: '8px' }}>
-              My Account
+              Hotlines
             </h4>
-            <ul className="space-y-2">
-              {[
-                { href: '/login',      label: 'Login' },
-                { href: '/register',   label: 'Register' },
-                { href: '/profile',    label: 'My Profile' },
-                { href: '/my-reports', label: 'My Reports' },
-                { href: '/report',     label: 'Report Emergency' },
-              ].map(l => (
-                <li key={l.href}>
-                  <Link href={l.href}
-                    className="text-gray-500 hover:text-orange-400 text-sm transition-colors flex items-center gap-1.5">
-                    <span className="text-xs" style={{ color: 'rgba(239,68,68,0.4)' }}>›</span>
-                    {l.label}
-                  </Link>
+            <p className="text-white font-bold text-xs mb-2" style={{ color: '#f97316' }}>🚒 Fire Stations</p>
+            <p className="text-gray-500 text-xs mb-3">Contact your nearest fire station directly.</p>
+            <Link href="/map" className="text-gray-500 hover:text-orange-400 text-xs transition-colors flex items-center gap-1.5 mb-4">
+              <span style={{ color: 'rgba(239,68,68,0.4)' }}>›</span> View all station hotlines
+            </Link>
+            <p className="text-white font-bold text-xs mb-2" style={{ color: '#60a5fa' }}>👮 Police Hotlines</p>
+            <p className="text-gray-500 text-xs mb-2 italic">If fire station hotlines are not answering, call the police.</p>
+            <ul className="space-y-1">
+              {['(032) 232-9370', '(032) 233-0762', '(032) 233-6795'].map(num => (
+                <li key={num}>
+                  <a href={`tel:${num}`} className="text-gray-400 hover:text-blue-400 text-xs transition-colors flex items-center gap-1.5">
+                    <span style={{ color: 'rgba(96,165,250,0.4)' }}>›</span> ☎️ {num}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -122,7 +121,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-gray-600 text-xs">
-            © {new Date().getFullYear()} Cebu City Fire Department. All rights reserved.
+            © {new Date().getFullYear()} Cebu City Fire System. All rights reserved.
           </p>
           <p className="text-gray-700 text-xs">
             Built with ❤️ for <span style={{ color: '#f97316' }}>Cebu</span>

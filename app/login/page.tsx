@@ -2,7 +2,6 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import Footer from '../../components/Footer';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
@@ -20,7 +19,7 @@ function LoginForm() {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/auth/login/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -305,11 +304,9 @@ function LoginForm() {
 
 export default function Login() {
   return (
-    <>
-      <Suspense>
-        <LoginForm />
-      </Suspense>
-      <Footer />
-    </>
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
+

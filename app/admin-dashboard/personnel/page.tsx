@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 
-const API = 'https://firebackend-tsi7.onrender.com';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 const RANKS = [
   { value: 'fire_marshal', label: 'Fire Marshal' },
@@ -149,3 +149,4 @@ export default function AdminPersonnelPage() {
     </div>
   );
 }
+

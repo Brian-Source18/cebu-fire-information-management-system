@@ -38,7 +38,7 @@ export default function Quiz() {
       setScore(finalScore);
       setShowResult(true);
       const token = localStorage.getItem('access_token');
-      fetch('https://firebackend-tsi7.onrender.com/api/quiz-results/', {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/quiz-results/`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ score: finalScore, total_questions: QUESTIONS.length }),
@@ -128,3 +128,4 @@ export default function Quiz() {
     </div>
   );
 }
+

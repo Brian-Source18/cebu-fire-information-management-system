@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 interface NewsItem {
   id: number;
@@ -30,6 +31,7 @@ export default function NewsManagement() {
     is_active: true,
   });
   const [submitting, setSubmitting] = useState(false);
+  const { refreshToken } = useAuth();
 
   useEffect(() => {
     fetchNews();
@@ -38,7 +40,7 @@ export default function NewsManagement() {
   const fetchNews = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/news/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/news/`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (response.ok) {
@@ -68,16 +70,27 @@ export default function NewsManagement() {
       }
 
       const url = editingNews
-        ? `https://firebackend-tsi7.onrender.com/api/admin/news/${editingNews.id}/`
-        : 'https://firebackend-tsi7.onrender.com/api/admin/news/';
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/admin/news/${editingNews.id}/`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/admin/news/`;
       
       const method = editingNews ? 'PATCH' : 'POST';
 
-      const response = await fetch(url, {
+      let response = await fetch(url, {
         method,
         headers: { 'Authorization': `Bearer ${token}` },
         body: formDataToSend,
       });
+
+      if (response.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          response = await fetch(url, {
+            method,
+            headers: { 'Authorization': `Bearer ${newToken}` },
+            body: formDataToSend,
+          });
+        }
+      }
 
       if (response.ok) {
         alert(editingNews ? 'News updated successfully!' : 'News created successfully!');
@@ -100,7 +113,7 @@ export default function NewsManagement() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/news/${id}/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/news/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
       });
@@ -149,7 +162,7 @@ export default function NewsManagement() {
         <h1 className="text-2xl font-bold text-orange-800">News Management</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition flex items-center gap-2"
+          className="bg-red-600 hover:bg-red-700 text-black px-6 py-2 rounded-lg font-semibold transition flex items-center gap-2"
         >
           <span>➕</span> Add News
         </button>
@@ -159,7 +172,7 @@ export default function NewsManagement() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-black-50 border-b">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created By</th>
@@ -168,16 +181,16 @@ export default function NewsManagement() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-black-200">
             {news.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={5} className="px-6 py-8 text-center text-black">
                   No news articles yet. Click "Add News" to create one.
                 </td>
               </tr>
             ) : (
               news.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
+                <tr key={item.id} className="hover:bg-black-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       {item.image && (
@@ -227,29 +240,29 @@ export default function NewsManagement() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-2xl font-bold text-black">
                 {editingNews ? 'Edit News' : 'Add News'}
               </h2>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6">
               <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-2">Title *</label>
+                <label className="block text-black font-semibold mb-2">Title *</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-2">Content *</label>
+                <label className="block text-black font-semibold mb-2">Content *</label>
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 h-32"
+                  className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 h-32"
                   required
                 />
               </div>
@@ -260,7 +273,7 @@ export default function NewsManagement() {
                   type="file"
                   accept="image/*"
                   onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] || null })}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-black"
                 />
                 {editingNews && editingNews.image && (
                   <img src={editingNews.image} alt="" className="mt-2 w-32 h-32 object-cover rounded" />
@@ -302,3 +315,4 @@ export default function NewsManagement() {
     </div>
   );
 }
+

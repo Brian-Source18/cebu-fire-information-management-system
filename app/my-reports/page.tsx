@@ -42,7 +42,7 @@ export default function MyReports() {
 
   const fetchReports = (isPolling = false) => {
     const token = localStorage.getItem('access_token');
-    fetch('https://firebackend-tsi7.onrender.com/api/emergency-reports/', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/emergency-reports/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -83,7 +83,7 @@ export default function MyReports() {
   const handleCancel = async (id: number) => {
     if (!confirm('Cancel this report?')) return;
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/emergency-reports/${id}/`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/emergency-reports/${id}/`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -222,3 +222,4 @@ export default function MyReports() {
     </div>
   );
 }
+

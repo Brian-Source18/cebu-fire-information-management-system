@@ -1,5 +1,35 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+const CEBU_BARANGAYS = [
+  'Adlaon','Agsungot','Apas','Babag','Bacayan','Banilad','Basak Pardo','Basak San Nicolas',
+  'Binaliw','Bonbon','Budlaan','Bulacao','Buot-Taup Pardo','Busay','Calamba','Cambinocot',
+  'Capitol Site','Carreta','Central','Cogon Pardo','Cogon Ramos','Day-as','Duljo','Ermita',
+  'Escario','Guadalupe','Guba','Hippodromo','Inayawan','Kalubihan','Kalunasan','Kamagayan',
+  'Kamputhaw','Kasambagan','Kinasang-an','Labangon','Lahug','Lorega','Lusaran','Luz',
+  'Mabini','Mabolo','Malubog','Mambaling','Mining','Mohon','Montalban','Motarro',
+  'Nasipit','Nga-an','Nangka','Pahina Central','Pahina San Nicolas','Pamutan','Pardo',
+  'Pari-an','Paril','Pasil','Pit-os','Poblacion Pardo','Pulangbato','Pung-ol-Sibugay',
+  'Punta Princesa','Quiot Pardo','Sambag I','Sambag II','San Antonio','San Jose',
+  'San Nicolas Central','San Roque','Santa Cruz','Santo Niño','Sapangdaku','Sawang Calero',
+  'Sinsin','Sirao','Suba','Sudlon I','Sudlon II','T. Padilla','Tabunan','Tagbao',
+  'Talamban','Taptap','Tejero','Tinago','Tisa','To-ong Pardo','Toong','Zapatera',
+];
+
+function MapPicker({ onPick }: { onPick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) { onPick(e.latlng.lat, e.latlng.lng); },
+  });
+  return null;
+}
+
+const pinIcon = typeof window !== 'undefined' ? new L.DivIcon({
+  html: '<div style="font-size:28px;line-height:1;">📍</div>',
+  iconSize: [32, 32], iconAnchor: [16, 32], className: ''
+}) : undefined;
 
 const cardStyle = {
   background: 'linear-gradient(135deg, rgba(30,10,10,0.95), rgba(20,5,5,0.98))',
@@ -44,19 +74,26 @@ export default function EmergencyReportsManagement() {
   const [filterPriority, setFilterPriority] = useState('');
   const [filterFrom, setFilterFrom]     = useState('');
   const [filterTo, setFilterTo]         = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addForm, setAddForm]           = useState({ title: '', description: '', barangay: '', location: '', latitude: '', longitude: '' });
+  const [addLoading, setAddLoading]     = useState(false);
+  const [pinPos, setPinPos]             = useState<[number,number] | null>(null);
+  const [mapMounted, setMapMounted]     = useState(false);
 
   useEffect(() => {
     fetchReports();
     const interval = setInterval(fetchReports, 10000);
     const token = localStorage.getItem('access_token');
-    fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/mark_all_read/', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/mark_all_read/`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => { setMapMounted(true); }, []);
 
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) setReports(await res.json());
@@ -65,7 +102,7 @@ export default function EmergencyReportsManagement() {
 
   const handleUpdateStatus = async (id: number, status: string) => {
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/${id}/`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),
@@ -75,7 +112,7 @@ export default function EmergencyReportsManagement() {
 
   const handleUpdateAlarm = async (id: number, alarm_level: string) => {
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/${id}/`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ alarm_level: alarm_level || null }),
@@ -84,10 +121,42 @@ export default function EmergencyReportsManagement() {
     if (selectedReport?.id === id) setSelectedReport((r: any) => ({ ...r, alarm_level: alarm_level || null }));
   };
 
+  const handleAddEmergency = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pinPos) { alert('Please click on the map to set the location.'); return; }
+    setAddLoading(true);
+    try {
+      const token = localStorage.getItem('access_token');
+      const body = {
+        title: addForm.title,
+        description: addForm.description,
+        location: `${addForm.location}, Brgy. ${addForm.barangay}, Cebu City`,
+        latitude: parseFloat(pinPos[0].toFixed(6)),
+        longitude: parseFloat(pinPos[1].toFixed(6)),
+        priority: 'high',
+        status: 'responding',
+      };
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        setShowAddModal(false);
+        setAddForm({ title: '', description: '', barangay: '', location: '', latitude: '', longitude: '' });
+        setPinPos(null);
+        fetchReports();
+      } else {
+        const d = await res.json();
+        alert(JSON.stringify(d));
+      }
+    } finally { setAddLoading(false); }
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this report?')) return;
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/emergency-reports/${id}/`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/emergency-reports/${id}/`, {
       method: 'DELETE', headers: { Authorization: `Bearer ${token}` },
     });
     fetchReports();
@@ -97,7 +166,7 @@ export default function EmergencyReportsManagement() {
     setSelectedReport(report); setResponseLog(null);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`https://firebackend-tsi7.onrender.com/api/admin/response-logs/?report=${report.id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/response-logs/?report=${report.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) { const d = await res.json(); setResponseLog(d.length > 0 ? d[0] : null); }
@@ -130,6 +199,11 @@ export default function EmergencyReportsManagement() {
           <h1 className="text-xl font-black text-orange-800">Emergency Reports</h1>
           <p className="text-gray-500 text-xs mt-0.5">{filtered.length} of {reports.length} reports</p>
         </div>
+        <button onClick={() => setShowAddModal(true)}
+          className="text-sm font-bold px-4 py-2 rounded-lg transition-colors"
+          style={{ background: 'rgba(239,68,68,0.15)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.3)' }}>
+          + Add Emergency
+        </button>
       </div>
 
       {/* Filters */}
@@ -222,6 +296,69 @@ export default function EmergencyReportsManagement() {
           </table>
         </div>
       </div>
+
+      {/* Add Emergency Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)' }}
+          onClick={e => { if (e.target === e.currentTarget) setShowAddModal(false); }}>
+          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl"
+            style={{ background: '#120505', border: '1px solid rgba(239,68,68,0.35)', boxShadow: '0 25px 60px rgba(0,0,0,0.8)' }}>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(239,68,68,0.2)' }}>
+              <h2 className="text-white font-black text-lg">🚨 Add Active Emergency</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-white text-xl">✕</button>
+            </div>
+            <form onSubmit={handleAddEmergency} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#f97316' }}>Title *</label>
+                <input required value={addForm.title} onChange={e => setAddForm({ ...addForm, title: e.target.value })}
+                  placeholder="Brief description of the emergency"
+                  className={inputCls} style={{ ...inputSty, width: '100%' }} />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#f97316' }}>Description *</label>
+                <textarea required value={addForm.description} onChange={e => setAddForm({ ...addForm, description: e.target.value })}
+                  placeholder="Provide details about the emergency..."
+                  rows={3} className={inputCls} style={{ ...inputSty, width: '100%', resize: 'none' }} />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#f97316' }}>Barangay *</label>
+                <select required value={addForm.barangay} onChange={e => setAddForm({ ...addForm, barangay: e.target.value })}
+                  className={inputCls} style={{ ...inputSty, width: '100%' }}>
+                  <option value="">Select Barangay</option>
+                  {CEBU_BARANGAYS.map(b => <option key={b} value={b}>{b}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#f97316' }}>Street / Address *</label>
+                <input required value={addForm.location} onChange={e => setAddForm({ ...addForm, location: e.target.value })}
+                  placeholder="Street name or landmark"
+                  className={inputCls} style={{ ...inputSty, width: '100%' }} />
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#f97316' }}>
+                  📍 Pin Location on Map * {pinPos && <span style={{ color: '#4ade80' }}>— ({pinPos[0].toFixed(5)}, {pinPos[1].toFixed(5)})</span>}
+                </label>
+                <p className="text-xs text-gray-500 mb-2">Click on the map to drop a pin at the exact location of the emergency.</p>
+                {mapMounted && (
+                  <div style={{ height: 280, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.3)' }}>
+                    <MapContainer center={[10.3157, 123.8854]} zoom={13} style={{ height: '100%', width: '100%' }}>
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      <MapPicker onPick={(lat, lng) => setPinPos([lat, lng])} />
+                      {pinPos && pinIcon && <Marker position={pinPos} icon={pinIcon} />}
+                    </MapContainer>
+                  </div>
+                )}
+              </div>
+              <button type="submit" disabled={addLoading || !pinPos}
+                className="w-full py-3 rounded-lg font-bold text-white text-sm uppercase tracking-widest transition-all"
+                style={{ background: addLoading || !pinPos ? 'rgba(239,68,68,0.3)' : 'linear-gradient(135deg,#dc2626,#ea580c)', cursor: addLoading || !pinPos ? 'not-allowed' : 'pointer' }}>
+                {addLoading ? 'Submitting...' : '🚨 Submit Emergency'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Detail Modal */}
       {selectedReport && (
@@ -354,3 +491,4 @@ export default function EmergencyReportsManagement() {
     </div>
   );
 }
+

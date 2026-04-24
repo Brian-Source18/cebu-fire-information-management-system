@@ -17,7 +17,7 @@ export default function Register() {
     setError('');
     setLoading(true);
     try {
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/auth/register/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -207,3 +207,4 @@ export default function Register() {
     </>
   );
 }
+

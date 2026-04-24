@@ -17,7 +17,7 @@ export default function TrainedHeroes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://firebackend-tsi7.onrender.com/api/heroic-acts/')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/heroic-acts/`)
       .then(res => res.json())
       .then(data => { setHeroicActs(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -34,7 +34,7 @@ export default function TrainedHeroes() {
             <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition">
               <div className="fire-badge" style={{fontSize: '1.5rem'}}>🔥</div>
               <div>
-                <h1 className="text-lg sm:text-2xl font-black text-white tracking-wider">CEBU FIRE DEPARTMENT</h1>
+                <h1 className="text-lg sm:text-2xl font-black text-white tracking-wider">CEBU CITY FIRE SYSTEM</h1>
                 <p className="text-yellow-300 text-xs sm:text-sm font-semibold">Our Heroes & Stations</p>
               </div>
             </Link>
@@ -88,10 +88,11 @@ export default function TrainedHeroes() {
 
         <footer className="bg-black/50 border-t-2 border-red-600 py-6 mt-16">
           <div className="container mx-auto px-6 text-center text-gray-400">
-            <p className="font-semibold">© 2024 Cebu Fire Department • Serving with Pride</p>
+            <p className="font-semibold">© 2024 Cebu City Fire System • Serving with Pride</p>
           </div>
         </footer>
       </div>
     </div>
   );
 }
+

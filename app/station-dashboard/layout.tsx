@@ -10,6 +10,8 @@ const menuItems = [
   { name: 'Dashboard',         path: '/station-dashboard',                  icon: '📊' },
   { name: 'Emergency Reports', path: '/station-dashboard/reports',          icon: '🚨' },
   { name: 'Personnel',         path: '/station-dashboard/personnel',        icon: '🧑‍🚒' },
+  { name: 'Equipment',         path: '/station-dashboard/equipment',        icon: '🛠️' },
+  { name: 'Fire Trucks',       path: '/station-dashboard/fire-trucks',      icon: '🚒' },
   { name: 'Statistics',        path: '/station-dashboard/statistics',       icon: '📈' },
   { name: 'Notifications',     path: '/station-dashboard/notifications',    icon: '🔔' },
   { name: 'Profile',           path: '/station-dashboard/profile',          icon: '👤' },
@@ -29,7 +31,7 @@ export default function StationDashboardLayout({ children }: { children: React.R
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/notifications/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/notifications/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -231,3 +233,4 @@ export default function StationDashboardLayout({ children }: { children: React.R
     </div>
   );
 }
+

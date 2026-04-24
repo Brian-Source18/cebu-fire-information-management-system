@@ -8,6 +8,7 @@ interface Announcement {
   title: string;
   message: string;
   priority: string;
+  image?: string;
   created_by_name: string;
   created_at: string;
 }
@@ -24,7 +25,7 @@ export default function AnnouncementDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`https://firebackend-tsi7.onrender.com/api/announcements/${id}/`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/announcements/${id}/`)
       .then(res => res.ok ? res.json() : null)
       .then(data => { setAnnouncement(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -63,6 +64,9 @@ export default function AnnouncementDetail() {
               </div>
               <h1 style={{ fontWeight: 900, color: '#1e293b', fontSize: 'clamp(20px, 4vw, 26px)', lineHeight: 1.3 }}>{announcement.title}</h1>
             </div>
+            {announcement.image && (
+              <img src={announcement.image} alt={announcement.title} style={{ width: '100%', maxHeight: 400, objectFit: 'cover', display: 'block' }} />
+            )}
             <div style={{ padding: '24px' }}>
               <div style={{ color: '#475569', fontSize: 15, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
                 {announcement.message}

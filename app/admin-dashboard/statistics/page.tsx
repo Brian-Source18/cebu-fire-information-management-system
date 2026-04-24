@@ -45,7 +45,7 @@ export default function StatisticsManagement() {
   const fetchStatistics = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('https://firebackend-tsi7.onrender.com/api/admin/statistics/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/statistics/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -61,8 +61,8 @@ export default function StatisticsManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const url = editingId 
-      ? `https://firebackend-tsi7.onrender.com/api/admin/statistics/${editingId}/`
-      : 'https://firebackend-tsi7.onrender.com/api/admin/statistics/';
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/admin/statistics/${editingId}/`
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/admin/statistics/`;
     const method = editingId ? 'PUT' : 'POST';
 
     try {
@@ -127,7 +127,7 @@ export default function StatisticsManagement() {
     if (!confirm('Delete this statistic?')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await fetch(`https://firebackend-tsi7.onrender.com/api/admin/statistics/${id}/`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/statistics/${id}/`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -304,3 +304,4 @@ export default function StatisticsManagement() {
     </div>
   );
 }
+

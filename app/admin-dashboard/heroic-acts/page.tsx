@@ -26,7 +26,7 @@ export default function HeroicActsManagement() {
 
   const fetchActs = async () => {
     const token = localStorage.getItem('access_token');
-    const res = await fetch('https://firebackend-tsi7.onrender.com/api/admin/heroic-acts/', { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/heroic-acts/`, { headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setActs(Array.isArray(data) ? data : []);
     setLoading(false);
@@ -34,7 +34,7 @@ export default function HeroicActsManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = editingId ? `https://firebackend-tsi7.onrender.com/api/admin/heroic-acts/${editingId}/` : 'https://firebackend-tsi7.onrender.com/api/admin/heroic-acts/';
+    const url = editingId ? `${process.env.NEXT_PUBLIC_API_URL}/api/admin/heroic-acts/${editingId}/` : `${process.env.NEXT_PUBLIC_API_URL}/api/admin/heroic-acts/`;
     const fd = new FormData();
     fd.append('title', formData.title);
     fd.append('story', formData.story);
@@ -56,7 +56,7 @@ export default function HeroicActsManagement() {
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this heroic act?')) return;
     const token = localStorage.getItem('access_token');
-    await fetch(`https://firebackend-tsi7.onrender.com/api/admin/heroic-acts/${id}/`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/heroic-acts/${id}/`, { method: `DELETE`, headers: { Authorization: `Bearer ${token}` } });
     fetchActs();
   };
 
@@ -195,3 +195,4 @@ export default function HeroicActsManagement() {
     </div>
   );
 }
+

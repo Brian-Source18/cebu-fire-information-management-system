@@ -29,7 +29,7 @@ export default function StationStatistics() {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/station/statistics/', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/station/statistics/`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) setStats(await res.json());
     } catch {}
     finally { setLoading(false); }
@@ -158,3 +158,4 @@ export default function StationStatistics() {
     </div>
   );
 }
+

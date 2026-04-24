@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cebu City Fire Department",
-  description: "Official portal of the Cebu City Fire Department",
+  title: "Cebu City Fire System",
+  description: "Official portal of the Cebu City Fire System",
 };
 
 export const viewport = {
@@ -40,3 +40,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -21,7 +21,7 @@ export default function FeedbackPage() {
       const token = localStorage.getItem('access_token');
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch('https://firebackend-tsi7.onrender.com/api/feedback/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/feedback/`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ rating, message, name: user ? '' : name }),
@@ -50,7 +50,7 @@ export default function FeedbackPage() {
         <div style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)', borderRadius: 20, padding: '28px 24px', marginBottom: 20, textAlign: 'center' }}>
           <div style={{ fontSize: 40, marginBottom: 10 }}>💬</div>
           <div style={{ color: '#fff', fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Share Your Feedback</div>
-          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>Help us improve the Cebu City Fire Department portal</div>
+          <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>Help us improve the Cebu City Fire System portal</div>
         </div>
 
         {success ? (
@@ -115,3 +115,4 @@ export default function FeedbackPage() {
     </div>
   );
 }
+
