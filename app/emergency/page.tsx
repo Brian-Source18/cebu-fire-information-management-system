@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+
+import Footer from '../../components/Footer';
+import PublicHeader from '../../components/PublicHeader';
 
 interface NewsItem {
   id: number;
@@ -52,18 +54,7 @@ export default function EmergencyResponse() {
       <div className="flames flames-2"></div>
       
       <div className="relative z-10">
-        <header className="bg-red-600 border-b-4 border-yellow-400 shadow-2xl">
-          <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 sm:gap-4 hover:opacity-80 transition">
-              <div className="fire-badge" style={{fontSize: '1.5rem'}}>🔥</div>
-              <div>
-                <h1 className="text-lg sm:text-2xl font-black text-white tracking-wider">CEBU CITY FIRE SYSTEM</h1>
-                <p className="text-yellow-300 text-xs sm:text-sm font-semibold">Emergency Response Updates</p>
-              </div>
-            </Link>
-            <Link href="/" className="bg-white/20 hover:bg-white/30 text-white text-sm font-bold px-4 py-2 rounded-lg transition">← Home</Link>
-          </div>
-        </header>
+      <PublicHeader />
 
         <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-16">
           <div className="max-w-5xl mx-auto">
@@ -192,13 +183,10 @@ export default function EmergencyResponse() {
           </div>
         )}
 
-        <footer className="bg-black/50 border-t-2 border-red-600 py-6 mt-16">
-          <div className="container mx-auto px-6 text-center text-gray-400">
-            <p className="font-semibold">© 2024 Cebu Fire Department • Serving with Pride</p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   );
 }
+
 

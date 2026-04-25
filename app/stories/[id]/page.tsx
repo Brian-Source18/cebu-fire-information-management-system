@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Footer from '../../../components/Footer';
+import PublicHeader from '../../../components/PublicHeader';
 
 export default function StoryDetail() {
   const { id } = useParams();
@@ -22,21 +23,7 @@ export default function StoryDetail() {
         .fade-up { animation: fadeUp 0.4s ease forwards; }
         .back-btn:hover { background: #fef2f2 !important; color: #dc2626 !important; }
       `}</style>
-
-      {/* Header */}
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <a href="/" className="back-btn" style={{ color: '#64748b', fontSize: 13, textDecoration: 'none', padding: '5px 12px', borderRadius: 8, border: '1px solid #e2e8f0', transition: 'all 0.2s', fontWeight: 600 }}>← Home</a>
-            <span style={{ color: '#cbd5e1' }}>|</span>
-            <div style={{ fontWeight: 800, color: '#1e293b', fontSize: 15 }}>🔥 Featured Stories</div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 28, height: 28, backgroundColor: '#dc2626', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>🔥</div>
-            <span style={{ fontWeight: 800, fontSize: 12, color: '#1e293b' }}>CEBU CITY FIRE SYSTEM</span>
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main style={{ maxWidth: 860, margin: '0 auto', padding: '32px 16px' }}>
         {loading ? (
@@ -101,3 +88,4 @@ export default function StoryDetail() {
     </div>
   );
 }
+

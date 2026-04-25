@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Footer from '../../components/Footer';
+import PublicHeader from '../../components/PublicHeader';
 import dynamic from 'next/dynamic';
 import API from '../../lib/api';
 
@@ -78,17 +79,7 @@ export default function MapPage() {
       <div className="flames flames-2" />
 
       <div className="relative z-10">
-        <header className="border-b-4 border-yellow-400 bg-red-600 shadow-2xl">
-          <div className="container mx-auto flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
-            <Link href="/" className="flex items-center gap-2 transition hover:opacity-80 sm:gap-4">
-              <div className="fire-badge text-2xl">🔥</div>
-              <div>
-                <h1 className="text-lg font-black tracking-wider text-white sm:text-2xl">CEBU CITY FIRE SYSTEM</h1>
-                <p className="text-xs font-semibold text-yellow-300 sm:text-sm">Fire Station Map</p>
-              </div>
-            </Link>
-          </div>
-        </header>
+      <PublicHeader />
 
         <main className="container mx-auto px-4 py-8 sm:px-6 sm:py-16">
           <div className="mx-auto max-w-6xl">
@@ -210,11 +201,7 @@ export default function MapPage() {
           </div>
         </main>
 
-        <footer className="mt-16 border-t-2 border-red-600 bg-black/50 py-6">
-          <div className="container mx-auto px-6 text-center text-gray-400">
-            <p className="font-semibold">Copyright 2026 Cebu Fire Department. Serving with Pride.</p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
+import PublicHeader from '../../components/PublicHeader';
 
 const statusConfig: Record<string, { color: string; bg: string; border: string; label: string; icon: string }> = {
   pending:    { color: '#d97706', bg: '#fffbeb', border: '#fde68a', label: 'Pending',    icon: '⏳' },
@@ -131,16 +132,7 @@ export default function MyReports() {
       </div>
 
       {/* Header */}
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <a href="/" style={{ color: '#64748b', fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>← Home</a>
-            <span style={{ color: '#cbd5e1' }}>|</span>
-            <div style={{ fontWeight: 800, color: '#1e293b', fontSize: 16 }}>My Reports</div>
-          </div>
-          <a href="/report" style={{ backgroundColor: '#dc2626', color: '#fff', fontWeight: 700, padding: '7px 16px', borderRadius: 8, textDecoration: 'none', fontSize: 13 }}>🚨 New Report</a>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main style={{ maxWidth: 800, margin: '0 auto', padding: '24px 16px' }}>
 
@@ -222,4 +214,5 @@ export default function MyReports() {
     </div>
   );
 }
+
 

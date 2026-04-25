@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
+import PublicHeader from '../../components/PublicHeader';
 
 export default function FeedbackPage() {
   const { user } = useAuth();
@@ -37,13 +38,7 @@ export default function FeedbackPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9', fontFamily: 'Arial, Helvetica, sans-serif' }}>
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <a href="/" style={{ color: '#64748b', fontSize: 13, textDecoration: 'none' }}>← Home</a>
-          <span style={{ color: '#cbd5e1' }}>|</span>
-          <div style={{ fontWeight: 800, color: '#1e293b', fontSize: 16 }}>💬 Feedback</div>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main style={{ maxWidth: 600, margin: '0 auto', padding: '24px 16px' }}>
         {/* Hero */}
@@ -115,4 +110,5 @@ export default function FeedbackPage() {
     </div>
   );
 }
+
 

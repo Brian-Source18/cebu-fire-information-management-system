@@ -8,7 +8,7 @@ interface EmergencyReport {
   latitude: number; longitude: number; priority: string; status: string;
   alarm_level: string | null; image: string; contact_number: string; reported_by_name: string; created_at: string;
 }
-interface Personnel { id: number; first_name: string; middle_initial: string; last_name: string; rank_display: string; }
+interface Personnel { id: number; first_name: string; middle_initial: string; last_name: string; rank_display: string; status: string; }
 interface ResponseLog { time_dispatched: string; time_arrived: string; personnel_deployed: Personnel[]; equipment_used: string; notes: string; }
 interface StationEquipment { id: number; name: string; name_display: string; category_display: string; operational: number; }
 interface FireTruck { id: number; truck_number: string; model: string; status: string; }
@@ -543,7 +543,7 @@ export default function StationReports() {
             <div className="mb-4">
               <label className={labelCls} style={{ color: '#f97316' }}>Personnel Deployed</label>
               <div className="rounded-lg p-3 max-h-40 overflow-y-auto grid grid-cols-2 gap-2" style={{ background: 'rgba(15,5,5,0.8)', border: '1px solid rgba(239,68,68,0.2)' }}>
-                {personnel.length === 0 ? <p className="text-gray-600 text-sm col-span-2">No personnel found</p> : personnel.map(p => (
+                {personnel.length === 0 ? <p className="text-gray-600 text-sm col-span-2">No personnel found</p> : personnel.filter(p => p.status === 'on_duty' || p.status === 'active').map(p => (
                   <label key={p.id} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: '#d1d5db' }}>
                     <input type="checkbox" checked={logForm.personnel_deployed_ids.includes(p.id)} onChange={() => togglePersonnel(p.id)} className="accent-orange-500" />
                     {p.first_name} {p.middle_initial ? p.middle_initial + '. ' : ''}{p.last_name} — {p.rank_display}

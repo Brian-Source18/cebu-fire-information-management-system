@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import Footer from '../../components/Footer';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import PublicHeader from '../../components/PublicHeader';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -106,16 +107,7 @@ export default function ProfilePage() {
       `}</style>
 
       {/* Header */}
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <a href="/" style={{ color: '#64748b', fontSize: 13, textDecoration: 'none' }}>← Home</a>
-            <span style={{ color: '#cbd5e1' }}>|</span>
-            <div style={{ fontWeight: 800, color: '#1e293b', fontSize: 16 }}>My Profile</div>
-          </div>
-          <button onClick={handleLogout} style={{ backgroundColor: '#fef2f2', color: '#dc2626', fontWeight: 700, padding: '7px 16px', borderRadius: 8, border: '1px solid #fca5a5', cursor: 'pointer', fontSize: 13 }}>Logout</button>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* Hero Banner */}
       <div style={{ background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)', padding: '32px 16px', textAlign: 'center' }}>
@@ -239,4 +231,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
 

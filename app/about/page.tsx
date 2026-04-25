@@ -1,22 +1,10 @@
 import Footer from '../../components/Footer';
-import Link from 'next/link';
+import PublicHeader from '../../components/PublicHeader';
 
 export default function AboutUs() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9', fontFamily: 'Arial, Helvetica, sans-serif' }}>
-      {/* Header */}
-      <header style={{ backgroundColor: '#fff', borderBottom: '1px solid #e2e8f0', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 36, height: 36, backgroundColor: '#dc2626', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>🔥</div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 13, color: '#1e293b', letterSpacing: 0.3, lineHeight: 1.2 }}>CEBU CITY FIRE SYSTEM</div>
-              <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 600 }}>Always Ready • Always There</div>
-            </div>
-          </div>
-          <Link href="/" style={{ color: '#64748b', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>← Back to Home</Link>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '32px 16px' }}>
         {/* Hero */}
@@ -56,3 +44,4 @@ export default function AboutUs() {
     </div>
   );
 }
+
